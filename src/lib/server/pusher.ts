@@ -11,15 +11,11 @@ const pusher = new Pusher({
 
 export const pusherMessage = async (eventName : string ,message : object) => {
 
-    const res = await pusher.trigger("my-channel", eventName, message)
+    await pusher.trigger("my-channel", eventName, message)
 
-    const error = res.status + res.url
+    //const error = res.status + res.url
     //console.log(error)
 
-    await prisma.error.create({
-        data: {
-            error : error
-        }
-    })
+    //await prisma.error.create({ data: { error : error } });
 
 }

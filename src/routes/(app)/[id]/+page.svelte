@@ -42,12 +42,12 @@
 </script>
 
 <div class="p-6 py-12">
-    <h2 class="text-5xl"><small class="text-xl text-neutral-500">overlay/</small> {event.name}</h2>
+    <h2 class="text-5xl"><small class="text-xl text-neutral-500 sm:inline hidden">overlay/</small> {event.name}</h2>
 </div>
 
 <div class="flex flex-row">
 <!--<p>{event.name}</p> -->
-    <div class="basis-1/4 p-6">
+    <div class="lg:w-[300px] flex-none w-full p-6">
         {#each event.graphic as graphic, i}
             <div>
                 <button class="transition-all duration-200 ease-linear relative w-full flex justify-center px-4 py-2 mb-5 rounded-xl border-solid border-2
@@ -71,8 +71,8 @@
             </button>
         </div>
     </div >
-    <div class="basis-3/4 p-6">
-        <iframe src="/output/{event.id}" title="Output" class="h-[450px] aspect-video mx-auto bg-[size:50px_50px] bg-[linear-gradient(45deg,_#101010_25%,transparent_25%,transparent_50%,#101010_50%,#101010_75%,transparent_75%,transparent)]"></iframe>
+    <div class="flex-1 p-6 lg:block hidden">
+        <iframe src="/output/{event.id}" title="Output" class="w-full aspect-video mx-auto bg-[size:50px_50px] bg-[linear-gradient(45deg,_#101010_25%,transparent_25%,transparent_50%,#101010_50%,#101010_75%,transparent_75%,transparent)]"></iframe>
         <OutputLink id="{event.id}" />
     </div>
 </div>
