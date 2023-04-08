@@ -10,7 +10,7 @@ export const POST = ( async (request) => {
 
     // console.log(body.visible)
 
-    pusherMessage('event-'+body.eventId, { visible : body.visible, graphicId : body.graphicId })
+    await pusherMessage('event-'+body.eventId, { visible : body.visible, graphicId : body.graphicId })
 
     await prisma.graphic.update({
         where: {
