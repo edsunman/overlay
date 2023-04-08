@@ -1,4 +1,5 @@
 import Pusher from 'pusher'
+import { prisma } from "$lib/server/prisma"
 
 const pusher = new Pusher({
         appId: "1577639",
@@ -12,6 +13,13 @@ export const pusherMessage = async (eventName : string ,message : object) => {
 
     const res = await pusher.trigger("my-channel", eventName, message)
 
-    console.log(res)
+    const error = res.status + res.url
+    //console.log(error)
+
+    await prisma.error.create({
+        data: {
+            error : error
+        }
+    })
 
 }

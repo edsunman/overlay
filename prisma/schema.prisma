@@ -65,3 +65,11 @@ model Graphic {
     @@index([event_id])
     @@map("graphic")
 }
+
+model Error {
+    id          Int @id @unique @default(autoincrement())
+    error       String @db.Text
+    created     DateTime @default(now())
+
+    @@map("error")
+}
