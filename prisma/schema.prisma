@@ -1,0 +1,67 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model AuthUser {
+  id            String    @id @unique
+  auth_session  AuthSession[]
+  auth_key      AuthKey[]
+  event         Event[]
+  name          String
+  username      String @unique
+  created       DateTime
+
+  @@map("auth_user")
+}
+
+model AuthSession {
+  id             String	@id @unique
+  user_id        String
+  active_expires BigInt
+  idle_expires   BigInt
+  auth_user      AuthUser   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("auth_session")
+}
+
+model AuthKey {
+  id              String  @id @unique
+  hashed_password String?
+  user_id         String
+  primary_key     Boolean
+  expires         BigInt?
+  auth_user       AuthUser    @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("auth_key")
+}
+
+model Event {
+    id          String @id @unique
+    name        String
+    user_id     String
+    auth_user   AuthUser    @relation(references: [id], fields: [user_id], onDelete: Cascade)
+    graphic     Graphic[]
+
+    @@index([user_id])
+    @@map("event")
+}
+
+model Graphic {
+    id          Int @id @unique @default(autoincrement())
+    type        String
+    data        String
+    visible     Boolean @default(false)
+    event_id    String
+    event       Event @relation(references: [id], fields: [event_id], onDelete: Cascade)
+
+    @@index([event_id])
+    @@map("graphic")
+}
