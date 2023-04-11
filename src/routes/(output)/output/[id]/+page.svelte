@@ -1,19 +1,37 @@
 <script lang="ts">
 
-    import { bind } from '$lib/client/pusherClient'
     import { onMount } from 'svelte';
     import { wipe, slideUp } from '$lib/client/transitions';
+    import { wsConnect } from '$lib/client/wsClient';
     
     export let data;
-    const { event } = data;
+    let { event } = data;
 
     onMount(async () => {  
 
-        bind('event-'+event.id, function(data: any) {
+      function onMessage(socketEvent : MessageEvent) {
 
-            const f = event.graphic.findIndex(x => x.id == data.graphicId);
-            event.graphic[f].visible = data.visible;
-        })
+            let message = JSON.parse(socketEvent.data)
+
+            if(message.message_type==="add") {
+
+                const m = JSON.parse(message.message);               
+                event.graphic = [...event.graphic, m];
+
+            } else if (message.message_type==="update") {
+
+                const m = JSON.parse(message.message);
+                const f = event.graphic.findIndex(x => x.id == m.graphic_id);
+                event.graphic[f].visible = m.visible;
+                
+            } else if (message.message_type==="delete") {
+
+                const m = JSON.parse(message.message);
+                event.graphic = event.graphic.filter(e => e.id !== m.id)
+            }
+        };
+
+        wsConnect(onMessage);
     })
 
    

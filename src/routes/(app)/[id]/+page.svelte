@@ -1,29 +1,57 @@
 <script lang="ts" >
      
     import { onMount } from 'svelte';
-    import { bind } from '$lib/client/pusherClient'
 	import OutputLink from './OutputLink.svelte';
+    import { wsConnect } from '$lib/client/wsClient';
 
     export let data;
-    const { event } = data;
+    let { event } = data;
+
+    let addingNewGraphic = false;
+    let newGraphicInput = '';
    
+    function showAddNewGraphic () {
+        addingNewGraphic = !addingNewGraphic;
+    }
 
-    async function changeVisible(graphicId : number) {
-
-        const f = event.graphic.findIndex(x => x.id == graphicId);
-
-        event.graphic[f].visible = !event.graphic[f].visible;
- 
-        const response = await fetch('/message', {
+    async function addNewGraphic () {
+        const response = await fetch('/graphic', {
             method: 'POST',
             headers: {
                 "content-type": "application/json",
                 "accept": "application/json"
                 },
             body: JSON.stringify({
+                'data': newGraphicInput,
+                'event_id': event.id
+            })
+        })
+        const graphic = await response.json();
+        //event.graphic.push(graphic)
+       // event = event;
+        forgetNewGraphic();
+    }
+
+    function forgetNewGraphic () {
+        addingNewGraphic = false;
+        newGraphicInput = '';
+    }
+
+    async function changeVisible(graphicId : number) {
+
+        const f = event.graphic.findIndex(x => x.id == graphicId);
+        event.graphic[f].visible = !event.graphic[f].visible;
+ 
+        const response = await fetch('/graphic', {
+            method: 'PATCH',
+            headers: {
+                "content-type": "application/json",
+                "accept": "application/json"
+                },
+            body: JSON.stringify({
                 'visible': event.graphic[f].visible,
-                'eventId': event.id,
-                'graphicId': graphicId
+                'event_id': event.id,
+                'graphic_id': graphicId
             })
         })
 
@@ -32,11 +60,29 @@
 
     onMount(async () => {  
 
-        bind('event-'+event.id, function(data: any) {
+        function onMessage(socketEvent : MessageEvent) {
 
-            const f = event.graphic.findIndex(x => x.id == data.graphicId);
-            event.graphic[f].visible = data.visible;
-        })
+            let message = JSON.parse(socketEvent.data)
+
+            if(message.message_type==="add") {
+
+                const m = JSON.parse(message.message);               
+                event.graphic = [...event.graphic, m];
+
+            } else if (message.message_type==="update") {
+
+                const m = JSON.parse(message.message);
+                const f = event.graphic.findIndex(x => x.id == m.graphic_id);
+                event.graphic[f].visible = m.visible;
+
+            } else if (message.message_type==="delete") {
+
+                const m = JSON.parse(message.message);
+                event.graphic = event.graphic.filter(e => e.id !== m.id)
+            }
+        };
+
+        wsConnect(onMessage);
     })
 
 </script>
@@ -61,14 +107,20 @@
             </div>
         {/each}
         <div>
-            <button class="transition-all duration-200 ease-linear relative w-full flex justify-center px-4 py-2 mb-5 rounded-xl border-dashed border-2
-                
-                {1 > 2 ? 'text-neutral-100 border-neutral-100 bg-neutral-700' :
-                        'hover:text-neutral-400 hover:border-neutral-400 text-neutral-500 border-neutral-500 '}
-                " >
-                <!-- <input type="checkbox" bind:checked={event.graphic[i].visible} on:change={() => changeVisible(graphic.id)}>-->
-                + new
-            </button>
+            {#if addingNewGraphic===false }
+                <button on:click={showAddNewGraphic} class="transition-all duration-200 ease-linear relative w-full flex justify-center px-4 py-2 mb-5 rounded-xl border-dashed border-2
+                    
+                    {1 > 2 ? 'text-neutral-100 border-neutral-100 bg-neutral-700' :
+                            'hover:text-neutral-400 hover:border-neutral-400 text-neutral-500 border-neutral-500 '}
+                    " >
+                    + new
+                </button>
+            {:else}
+            <form on:submit|preventDefault={addNewGraphic}>
+                <input bind:value={newGraphicInput} on:blur={forgetNewGraphic} type="text" autofocus class="text-center relative w-full flex justify-center px-4 py-2 mb-5 rounded-xl border-solid border-2 bg-neutral-900" />
+            </form>
+
+            {/if}
         </div>
     </div >
     <div class="flex-1 p-6 lg:block hidden">

@@ -11,7 +11,7 @@ export const POST = (async({ locals })=>{
         return json('error: not autherised');
     }
 
-    const id = (Math.random() + 1).toString(36).substring(7)
+    const id = (Math.random() + 1).toString(36).substring(8)
 
     try {
         await prisma.event.create({ data: { id: id , user_id : session.userId, name : 'new event'}})

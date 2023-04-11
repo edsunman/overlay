@@ -4,7 +4,7 @@
 
 
 
-<div class="text-white h-screen">
+<div class="text-neutral-100 h-screen">
     <div class="container mx-auto max-w-6xl">
         <slot />
     </div>

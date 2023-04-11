@@ -1,5 +1,5 @@
 import Pusher from 'pusher'
-import { prisma } from "$lib/server/prisma"
+//import { prisma } from "$lib/server/prisma"
 
 const pusher = new Pusher({
         appId: "1577639",
