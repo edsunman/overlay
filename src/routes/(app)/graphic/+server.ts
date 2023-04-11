@@ -55,7 +55,7 @@ export const POST = (async({ locals, request })=>{
 }) as RequestHandler;
 
 
-export const PATCH = (async({ locals, request })=>{ 
+export const PATCH = (async({ request })=>{ 
 
     // TODO: add validation here? May not need it if event id routes messages on server...
 

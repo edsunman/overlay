@@ -117,6 +117,7 @@
                 </button>
             {:else}
             <form on:submit|preventDefault={addNewGraphic}>
+                <!-- svelte-ignore a11y-autofocus -->
                 <input bind:value={newGraphicInput} on:blur={forgetNewGraphic} type="text" autofocus class="text-center relative w-full flex justify-center px-4 py-2 mb-5 rounded-xl border-solid border-2 bg-neutral-900" />
             </form>
 
