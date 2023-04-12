@@ -10,7 +10,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-        "postinstall": "prisma generate"
+		"postinstall": "prisma generate"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",
@@ -38,6 +38,7 @@
 		"@prisma/client": "^4.12.0",
 		"lucia-auth": "^0.11.0",
 		"pusher": "^5.1.2",
-		"pusher-js": "^8.0.2"
+		"pusher-js": "^8.0.2",
+		"socket.io-client": "^4.6.1"
 	}
 }

@@ -60,9 +60,9 @@
 
     onMount(async () => {  
 
-        function onMessage(socketEvent : MessageEvent) {
-
-            let message = JSON.parse(socketEvent.data)
+        function onMessage(message: { event_id : string, message_type : string, message : string }) {
+            
+            console.log("message received : " + message.event_id)
 
             if(message.message_type==="add") {
 
@@ -82,7 +82,7 @@
             }
         };
 
-        wsConnect(onMessage);
+        wsConnect(onMessage, event.id);
     })
 
 </script>
