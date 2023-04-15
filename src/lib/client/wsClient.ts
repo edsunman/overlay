@@ -7,7 +7,7 @@ type onMessageFunction = ( message: { event_id : string, message_type : string, 
 
 export function wsConnect(onMessage : onMessageFunction, eventId: string){
 
-    const socket = io(PUBLIC_WS_URL,{  query: { 'event_id': eventId }});
+    const socket = io(PUBLIC_WS_URL,{  query: { 'event_id': eventId } /* , transports: ["websocket"] */});
 
     socket.on('some event', onMessage );
 

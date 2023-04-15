@@ -1,7 +1,7 @@
 <script lang="ts">
 
     import { onMount } from 'svelte';
-    import { wipe, slideUp } from '$lib/client/transitions';
+    import { wipe, slideUp, fullScreenWipeIn, fullScreenWipeOut } from '$lib/client/transitions';
     import { wsConnect } from '$lib/client/wsClient';
     
     export let data;
@@ -11,22 +11,26 @@
 
       function onMessage(message : { event_id : string, message_type : string, message : string }) {
 
-            //let message = JSON.parse(socketEvent.data)
+            const m = JSON.parse(message.message);
 
             if(message.message_type==="add") {
-
-                const m = JSON.parse(message.message);               
+       
                 event.graphic = [...event.graphic, m];
 
             } else if (message.message_type==="update") {
 
-                const m = JSON.parse(message.message);
-                const f = event.graphic.findIndex(x => x.id == m.graphic_id);
-                event.graphic[f].visible = m.visible;
-                
+                if(m.graphic_id){
+
+                    const f = event.graphic.findIndex(x => x.id == m.graphic_id);
+                    event.graphic[f].visible = m.visible;
+
+                } else {
+
+                    event.colour = m.colour;
+                }
+
             } else if (message.message_type==="delete") {
 
-                const m = JSON.parse(message.message);
                 event.graphic = event.graphic.filter(e => e.id !== m.id)
             }
         };
@@ -39,11 +43,23 @@
 
 
 {#each event.graphic as graphic, i}
-    {#if event.graphic[i].visible}
+    {#if graphic.visible && graphic.type==='title'}
+        <div class="z-10 whitespace-nowrap overflow-hidden absolute right-0 left-0 top-0 bottom-0 h-[15%] m-auto text-center">
+            <h2 class="2xl:text-[9rem] 2xl:pb-2 2xl:pl-8 2xl:pr-8 text-6xl font-bold pb-1 pl-4 pr-4 "
+            in:slideUp="{{delay: 200, duration: 500}}"  out:slideUp="{{delay: 0, duration: 500}}" 
+            >{event.name}</h2>
+        </div>
+        <div style="background-color:{event.colour}" in:fullScreenWipeIn="{{duration: 500}}"  out:fullScreenWipeOut="{{duration: 500, delay:300}}"
+            class="h-full absolute w-full top-0 z-0">
+        </div>
+        
+    {/if}
+    {#if graphic.visible && graphic.type==='lower_third'}
         <div in:wipe="{{duration: 500}}" out:wipe="{{duration: 500 , delay:150 }}" 
-            class="whitespace-nowrap overflow-hidden absolute bottom-[15%] left-[10%] h-[15%] w-[50%] bg-rose-500 flex content-center flex-wrap">
-
-            <h2 class="2xl:text-8xl 2xl:pb-2 2xl:pl-8 text-4xl font-bold pb-1 pl-4"
+            style="background-color:{event.colour}"
+            class="z-[-10] whitespace-nowrap overflow-hidden absolute bottom-[15%] left-[10%] h-[15%] flex content-center flex-wrap">
+            <!-- w-[50%]-->
+            <h2 class="2xl:text-8xl 2xl:pb-2 2xl:pl-8 2xl:pr-8 text-4xl font-bold pb-1 pl-4 pr-4"
             in:slideUp="{{delay: 150, duration: 500}}" out:slideUp="{{duration: 500}}"
             >{graphic.data}</h2>
 

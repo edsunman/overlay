@@ -2,7 +2,7 @@
 
 	<form method="POST">
 		<hgroup>
-			<h2 class="md:text-8xl text-4xl text-center md:pb-24 pb-10">overlay</h2>
+			<h2 class="md:text-8xl text-4xl text-center md:pb-24 pb-10 text-neutral-300">overlay</h2>
 		</hgroup>
 		<label for="username" class="block mb-3 text-neutral-300">Username</label>
 		<input type="text" id="username" name="username" required class="block w-full rounded-sm bg-neutral-800 mb-3 p-3" />

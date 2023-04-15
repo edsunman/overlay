@@ -47,7 +47,11 @@ model Event {
     id          String @id @unique
     name        String
     user_id     String
-    auth_user   AuthUser    @relation(references: [id], fields: [user_id], onDelete: Cascade)
+    auth_user   AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
+    colour      String @default("#f43f5e")
+    colour_text String @default("#000000")
+    font        Int @default(0)
+    rounded     Int @default(0)
     graphic     Graphic[]
 
     @@index([user_id])

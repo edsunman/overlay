@@ -57,7 +57,8 @@ export const POST = (async({ locals, request })=>{
 
 export const PATCH = (async({ request })=>{ 
 
-    // TODO: add validation here? May not need it if event id routes messages on server...
+    // TODO: add validation here? Will slow down the graphic show/hide request possibly / maybe....
+    // Is not knowing the  id of graphic + event enough security?
 
     try {
         const jsonGraphic : { event_id : string, graphic_id : string, visible : boolean } = await request.json();
@@ -113,6 +114,8 @@ export const DELETE = (async({ locals, request })=>{
                 message: 'no graphic id'
             })
         }
+
+        // TODO check grapic belongs to event owned by user
         const graphic = await prisma.graphic.findFirst({ where : {
             id: jsonGraphic.graphic_id
         }});
