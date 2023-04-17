@@ -1,4 +1,4 @@
-import { auth, githubAuth } from "$lib/server/lucia";
+import { githubAuth } from "$lib/server/lucia";
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ cookies }) => {

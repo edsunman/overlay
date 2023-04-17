@@ -6,6 +6,7 @@
     import OutputLink from './OutputLink.svelte';
     import ThemeControls from './ThemeControls.svelte';
     import GraphicButtons from './GraphicButtons.svelte';
+	import MobileLockButton from './MobileLockButton.svelte';
 
     export let data;
     let { event } = data;
@@ -54,8 +55,8 @@
 
 </script>
 
-<div class="p-6 py-12">
-    <h2 class="text-5xl"><small
+<div class="sm:p-6 sm:py-12 p-6 pb-0">
+    <h2 class="text-2xl sm:text-5xl"><small
         class="transition-all duration-100 ease-linear hover:text-neutral-200 text-xl text-neutral-500 sm:inline hidden">
         <a href="/"  data-sveltekit-preload-data="hover"  >overlay/</a>
     </small> {$eventStore.name}</h2>
@@ -65,6 +66,7 @@
 <!--<p>{event.name}</p> -->
     <div class="lg:w-[350px] flex-none w-full p-6">
         <GraphicButtons />
+        <MobileLockButton />
     </div >
     <div class="flex-1 p-6 pt-0 lg:block hidden">
         <OutputLink id="{event.id}" />

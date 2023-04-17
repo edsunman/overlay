@@ -1,5 +1,5 @@
 import { auth, githubAuth } from "$lib/server/lucia";
-import { redirect } from "@sveltejs/kit";
+import { redirect, error } from "@sveltejs/kit";
 
 import type { RequestHandler } from './$types';
 
@@ -12,9 +12,15 @@ export const GET: RequestHandler = async ({ cookies, url, locals }) => {
 	const storedState = cookies.get("github_oauth_state");
 
 	// validate state
-	if (state !== storedState) throw new Response(null, { status: 401 });
+	if (state !== storedState) {
+        console.log('invalid state')
+        throw redirect(302, "/");
+    }
 
-    if (!code) throw new Response(null, { status: 401 });
+    if (!code) {
+        console.log('no code')
+        throw redirect(302, "/");
+    }
 
 	try {
 		const { existingUser, providerUser, createUser } = await githubAuth.validateCallback(code);
@@ -35,10 +41,8 @@ export const GET: RequestHandler = async ({ cookies, url, locals }) => {
 		locals.auth.setSession(session);
 
 	} catch (e) {
-		// invalid code
-		return new Response(null, {
-			status: 500
-		});
+        console.error(e);
+        throw error(403, { message: 'Error' });
 	}
 	throw redirect(302, "/");
 };
