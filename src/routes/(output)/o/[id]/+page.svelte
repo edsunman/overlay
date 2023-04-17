@@ -12,17 +12,22 @@
       function onMessage(message : { event_id : string, message_type : string, message : string }) {
 
             const m = JSON.parse(message.message);
-
-            if(message.message_type==="add") {
+            
+            if (message.message_type==="add") {
        
                 event.graphic = [...event.graphic, m];
 
             } else if (message.message_type==="update") {
 
-                if(m.graphic_id){
+                if(typeof m.visible !== 'undefined'){
 
                     const f = event.graphic.findIndex(x => x.id == m.graphic_id);
                     event.graphic[f].visible = m.visible;
+
+                } else if (m.data) {
+
+                    const f = event.graphic.findIndex(x => x.id == m.graphic_id);
+                    event.graphic[f].data = m.data;
 
                 } else {
 

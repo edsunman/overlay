@@ -55,7 +55,62 @@ export const POST = (async({ locals, request })=>{
 }) as RequestHandler;
 
 
-export const PATCH = (async({ request })=>{ 
+export const PATCH = (async({ request, locals })=>{ 
+
+    const session = await locals.auth.validate()
+
+    if (!session) {
+        return json('error: not autherised');
+    }
+
+    try {
+        const jsonGraphic : { event_id : string, graphic_id : string, data : string } = await request.json();
+
+        if (!jsonGraphic.event_id) {
+            throw error(403, {
+                message: 'no event id'
+            })
+        }
+
+        const event = await prisma.event.findFirst({
+            where : {
+                id : jsonGraphic.event_id,
+                user_id : session.userId
+            }
+        })
+
+        if (!event) {
+            throw error(403, {
+                message: 'event does not exist'
+            })
+        }
+
+        await prisma.graphic.update({
+            where: {
+                id: Number(jsonGraphic.graphic_id)
+            },
+            data: {
+                data: jsonGraphic.data
+            }
+        })
+
+        await sendMessage( jsonGraphic.event_id , "update" , JSON.stringify({
+            "graphic_id" : jsonGraphic.graphic_id , "data" : jsonGraphic.data
+        }));
+
+        return json({ "id" : jsonGraphic.graphic_id, "data" : jsonGraphic.data });
+
+    } catch (err : unknown) {
+
+        console.error(err);
+
+        throw error(403, { message: 'Error' });
+    }
+
+}) as RequestHandler;
+
+
+export const PUT = (async({ request })=>{ 
 
     // TODO: add validation here? Will slow down the graphic show/hide request possibly / maybe....
     // Is not knowing the  id of graphic + event enough security?

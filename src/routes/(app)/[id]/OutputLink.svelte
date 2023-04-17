@@ -4,7 +4,7 @@
 
     export let id: string;
 
-    const outputUrl : string = $page.url.origin + '/output/' + id;
+    const outputUrl : string = $page.url.origin + '/o/' + id;
 
     async function copyOutputUrl() {
 
@@ -16,11 +16,13 @@
 </script>
 
 
-<div class="font-mono text-sm mt-3 relative mr-10 text-right">
-            <a href="{outputUrl}" target="_blank" class=" text-neutral-500 hover:text-neutral-200  transition-all duration-200">{outputUrl}</a>
-            <button on:click={copyOutputUrl} class="absolute ml-2 text-neutral-500 hover:text-neutral-200  active:text-white transition-all duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0015 2.25h-1.5a2.251 2.251 0 00-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 00-9-9z" />
+<div class="font-mono text-sm mb-2 relative mr-10 text-right">
+            <a href="{outputUrl}" target="_blank" class=" text-neutral-600 hover:text-neutral-200  transition-all duration-100">{outputUrl}</a>
+            <button on:click={copyOutputUrl} class="absolute ml-2 text-neutral-600 hover:text-neutral-200  active:text-white transition-all duration-100">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"  class="w-5 h-5">
+                   
+                        <path d="m22 7c0-.478-.379-1-1-1h-14c-.62 0-1 .519-1 1v14c0 .621.52 1 1 1h14c.478 0 1-.379 1-1zm-20 8v2c0 .621.52 1 1 1h2v-1.5h-1.5v-1.5zm1.5-4.363v3.363h-1.5v-3.363zm0-4.637v3.637h-1.5v-3.637zm11.5-4v1.5h1.5v1.5h1.5v-2c0-.478-.379-1-1-1zm-10 0h-2c-.62 0-1 .519-1 1v2h1.5v-1.5h1.5zm4.5 1.5h-3.5v-1.5h3.5zm4.5 0h-3.5v-1.5h3.5z" fill-rule="nonzero"/>
+
                 </svg>
             </button>
 </div>

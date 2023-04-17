@@ -48,10 +48,11 @@ model Event {
     name        String
     user_id     String
     auth_user   AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
-    colour      String @default("#f43f5e")
+    colour      String @default("#ff0059")
     colour_text String @default("#000000")
     font        Int @default(0)
     rounded     Int @default(0)
+    edit_mode   Boolean @default(false)
     graphic     Graphic[]
 
     @@index([user_id])
@@ -64,6 +65,7 @@ model Graphic {
     data        String
     visible     Boolean @default(false)
     event_id    String
+    editing     Boolean @default(false)
     event       Event @relation(references: [id], fields: [event_id], onDelete: Cascade)
 
     @@index([event_id])

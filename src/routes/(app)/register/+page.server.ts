@@ -15,7 +15,9 @@ export const actions : Actions = {
 
     default: async ({ request }) => {
 
-        const { name, username, password } = Object.fromEntries(    
+        // TODO : impliment properly
+
+        /*const { name, username, password } = Object.fromEntries(    
             await request.formData()
         ) as Record<string,string>
 
@@ -35,7 +37,7 @@ export const actions : Actions = {
         } catch (err) {
             console.error(err)
             return fail(400, {message: 'Could not register user'})
-        }
+        }*/
 
         throw redirect(302, '/login')
     } 
