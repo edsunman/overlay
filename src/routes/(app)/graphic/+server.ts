@@ -169,8 +169,7 @@ export const DELETE = (async({ locals, request })=>{
                 message: 'no graphic id'
             })
         }
-
-        // TODO check grapic belongs to event owned by user
+        
         const graphic = await prisma.graphic.findFirst({ where : {
             id: jsonGraphic.graphic_id
         }});

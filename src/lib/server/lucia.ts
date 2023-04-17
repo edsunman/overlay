@@ -4,6 +4,7 @@ import prismaAdapter from '@lucia-auth/adapter-prisma'
 import { dev } from '$app/environment'
 import { prisma } from '$lib/server/prisma'
 import { sveltekit } from "lucia-auth/middleware";
+import { GITHUB_SECRET, GITHUB_CLIENT } from '$env/static/private';
 
 export const auth = lucia({
     middleware: sveltekit(),
@@ -19,8 +20,8 @@ export const auth = lucia({
 })
 
 const config = {
-		clientId:'984f2d6fb95be6eed591',
-		clientSecret:'0cd70aa7b2887faae18fd0d359d29913e501f163'
+		clientId:GITHUB_CLIENT,
+		clientSecret:GITHUB_SECRET
 	}
 
 export const githubAuth = github(auth, config);
