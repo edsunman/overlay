@@ -1,8 +1,8 @@
 <script lang="ts">
 
-    import { onMount } from 'svelte';
-    import { wipe, slideUp, fullScreenWipeIn, fullScreenWipeOut } from '$lib/client/transitions';
-    import { wsConnect } from '$lib/client/wsClient';
+    import { onMount } from 'svelte'
+    import { wipe, slideUp, fullScreenWipeIn, fullScreenWipeOut } from '$lib/client/transitions'
+    import { wsConnect } from '$lib/client/wsClient'
     
     export let data;
     let { event } = data;
@@ -10,36 +10,24 @@
     onMount(async () => {  
 
       function onMessage(message : { event_id : string, message_type : string, message : string }) {
-
-            const m = JSON.parse(message.message);
-            
+            const m = JSON.parse(message.message)
             if (message.message_type==="add") {
-       
-                event.graphic = [...event.graphic, m];
-
+                event.graphic = [...event.graphic, m]
             } else if (message.message_type==="update") {
-
                 if(typeof m.visible !== 'undefined'){
-
-                    const f = event.graphic.findIndex(x => x.id == m.graphic_id);
+                    const f = event.graphic.findIndex(x => x.id == m.graphic_id)
                     event.graphic[f].visible = m.visible;
-
                 } else if (m.data) {
-
-                    const f = event.graphic.findIndex(x => x.id == m.graphic_id);
-                    event.graphic[f].data = m.data;
-
+                    const f = event.graphic.findIndex(x => x.id == m.graphic_id)
+                    event.graphic[f].data = m.data
                 } else {
-
                     event.colour = m.colour;
+                    event.rounded = m.rounded;
                 }
-
             } else if (message.message_type==="delete") {
-
                 event.graphic = event.graphic.filter(e => e.id !== m.id)
             }
-        };
-
+        }
         wsConnect(onMessage, event.id);
     })
 
@@ -61,8 +49,9 @@
     {/if}
     {#if graphic.visible && graphic.type==='lower_third'}
         <div in:wipe="{{duration: 500}}" out:wipe="{{duration: 500 , delay:150 }}" 
-            style="background-color:{event.colour}"
-            class="z-[-10] whitespace-nowrap overflow-hidden absolute bottom-[15%] left-[10%] h-[15%] flex content-center flex-wrap">
+            style="background-color:{event.colour};"
+            class="{event.rounded===0? 'rounded0':'rounded1'}
+            z-[-10] whitespace-nowrap overflow-hidden absolute bottom-[15%] left-[10%] h-[15%] flex content-center flex-wrap">
             <!-- w-[50%]-->
             <h2 class="2xl:text-8xl 2xl:pb-2 2xl:pl-8 2xl:pr-8 text-4xl font-bold pb-1 pl-4 pr-4"
             in:slideUp="{{delay: 150, duration: 500}}" out:slideUp="{{duration: 500}}"
@@ -71,3 +60,19 @@
         </div>
     {/if}
 {/each}
+
+<style>
+    .rounded0 {
+        border-radius: 0px;
+    }
+
+    .rounded1 {
+        border-radius: 10px;
+    }
+
+    @media (min-width: 1536px){
+        .rounded1 {
+            border-radius: 25px;
+        }
+    }
+</style>

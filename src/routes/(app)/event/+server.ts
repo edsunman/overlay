@@ -32,47 +32,37 @@ export const POST = (async({ locals , request })=>{
 });
 
 export const PATCH = (async({ request, locals }) => { 
-
     const session = await locals.auth.validate()
-
     if (!session) {
         return json('error: not autherised');
     }
-
-
     try {
-
-        const jsonEvent : { event_id : string, colour : string } = await request.json();
-
+        const jsonEvent : { event_id : string, colour : string, rounded : number } = await request.json();
         if (!jsonEvent.event_id) {
             throw error(403, {
                 message: 'no event id'
             })
         }
-
         const event = await prisma.event.findFirst({ where : {
             id: jsonEvent.event_id,
             user_id: session.userId
-        }});
-
-        await sendMessage( jsonEvent.event_id , "update" , JSON.stringify({ "colour" : jsonEvent.colour }));
-
+        }})
+        await sendMessage( jsonEvent.event_id , "update" , JSON.stringify({ 
+            "colour" : jsonEvent.colour,
+            "rounded" : jsonEvent.rounded
+        }));
         await prisma.event.update({
             where : {
                 id : jsonEvent.event_id
             },
             data : {
-                colour : jsonEvent.colour
+                colour : jsonEvent.colour,
+                rounded : jsonEvent.rounded
             }
-        });
-
-        return json(event);
-
+        })
+        return json(event)
      } catch (err : unknown) {
-
         console.error(err);
         throw error(403, { message: 'Error' });
     }
-
-
-});
+})

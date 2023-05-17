@@ -1,27 +1,24 @@
 <script lang="ts" >
 
-    import { eventStore } from '$lib/client/stores';
-    import { overlayFetch } from '$lib/client/overlay';
+    import { eventStore } from '$lib/client/stores'
+    import { overlayFetch } from '$lib/client/overlay'
 
-    let addingNewGraphic = false;
-    let newGraphicInput = '';
+    let addingNewGraphic = false
+    let newGraphicInput = ''
 
     function showAddNewGraphic() {
         addingNewGraphic = !addingNewGraphic;       
     }
 
     function forgetNewGraphic() {
-        addingNewGraphic = false;
-        newGraphicInput = '';
+        addingNewGraphic = false
+        newGraphicInput = ''
     }
 
     async function changeVisible(graphicId : number) {
-
-        const f = $eventStore.graphic.findIndex(x => x.id == graphicId);
-
+        const f = $eventStore.graphic.findIndex(x => x.id == graphicId)
         if(!$eventStore.graphic[f].editing) {
-            $eventStore.graphic[f].visible = !$eventStore.graphic[f].visible;
-
+            $eventStore.graphic[f].visible = !$eventStore.graphic[f].visible
             await overlayFetch('/graphic', 'PUT', {
                 'visible': $eventStore.graphic[f].visible,
                 'event_id': $eventStore.id,
@@ -31,45 +28,37 @@
     }
 
     async function changeGraphicData(graphicId : number, e : any) {
-
         const data = e.srcElement[0].value;
-
         const graphic = await overlayFetch('/graphic','PATCH',{
             'data': data,
             'event_id': $eventStore.id,
             'graphic_id': graphicId
-        });
-        
+        })
         if (graphic.id) {
-            const f = $eventStore.graphic.findIndex(x => x.id == graphic.id);
-            $eventStore.graphic[f].editing = false;
-            $eventStore.graphic[f].data = graphic.data;
+            const f = $eventStore.graphic.findIndex(x => x.id == graphic.id)
+            $eventStore.graphic[f].editing = false
+            $eventStore.graphic[f].data = graphic.data
         }
-        
     }
 
     async function deleteGraphic(graphicId: number) {
-
-        await overlayFetch('/graphic', 'DELETE',{
+        const graphic = await overlayFetch('/graphic', 'DELETE',{
                'event_id': $eventStore.id,
                'graphic_id': graphicId
         })
     }
 
     async function editGraphic(graphicId: number) {
-
-        const f = $eventStore.graphic.findIndex(x => x.id == graphicId);
-        $eventStore.graphic[f].editing = !$eventStore.graphic[f].editing;
+        const f = $eventStore.graphic.findIndex(x => x.id == graphicId)
+        $eventStore.graphic[f].editing = !$eventStore.graphic[f].editing
     }
 
     async function addNewGraphic() {
-
-        await overlayFetch('/graphic', 'POST',{
+        const graphic = await overlayFetch('/graphic', 'POST',{
                 'data': newGraphicInput,
                 'event_id': $eventStore.id
         })
-
-        forgetNewGraphic();
+        forgetNewGraphic()
     }
 
 </script>

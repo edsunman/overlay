@@ -1,56 +1,45 @@
 <script lang="ts" >
      
-    import { onMount } from 'svelte';
-    import { wsConnect } from '$lib/client/wsClient';
+    import { onMount } from 'svelte'
+    import { wsConnect } from '$lib/client/wsClient'
     import { eventStore } from '$lib/client/stores'
-    import OutputLink from './OutputLink.svelte';
-    import ThemeControls from './ThemeControls.svelte';
-    import GraphicButtons from './GraphicButtons.svelte';
-	import MobileLockButton from './MobileLockButton.svelte';
+    import OutputLink from './OutputLink.svelte'
+    import ThemeControls from './ThemeControls.svelte'
+    import GraphicButtons from './GraphicButtons.svelte'
+	import MobileLockButton from './MobileLockButton.svelte'
 
-    export let data;
-    let { event } = data;
-    $eventStore = event;
+    export let data
+    let { event } = data
+    $eventStore = event
 
     $: if ($eventStore.edit_mode === false) {
         $eventStore.graphic.forEach((graphic) => { graphic.editing = false })
-        
     }
 
     onMount(async () => {  
-
+        console.log($eventStore)
         function onMessage(message: { event_id : string, message_type : string, message : string }) {
-
-            const m = JSON.parse(message.message);
-
+            const m = JSON.parse(message.message)
             if(message.message_type==="add") {
-       
-                $eventStore.graphic = [...event.graphic, m];
-
-            } else if (message.message_type==="update") {
-
-                if(typeof m.visible !== 'undefined'){
-
-                    const f = $eventStore.graphic.findIndex(x => x.id == m.graphic_id);
-                    $eventStore.graphic[f].visible = m.visible;
-
-                } else if (m.data) {
-
-                    const f = $eventStore.graphic.findIndex(x => x.id == m.graphic_id);
-                    $eventStore.graphic[f].data = m.data;
-
-                } else {
-
-                    $eventStore.colour = m.colour;
+                const f = $eventStore.graphic.findIndex(x => x.id == m.graphic_id)
+                if(f<0){
+                    $eventStore.graphic = [...event.graphic, m]
                 }
-
+            } else if (message.message_type==="update") {
+                if(typeof m.visible !== 'undefined'){
+                    const f = $eventStore.graphic.findIndex(x => x.id == m.graphic_id)
+                    $eventStore.graphic[f].visible = m.visible
+                } else if (m.data) {
+                    const f = $eventStore.graphic.findIndex(x => x.id == m.graphic_id)
+                    $eventStore.graphic[f].data = m.data
+                } else {
+                    $eventStore.colour = m.colour
+                }
             } else if (message.message_type==="delete") {
-
                 $eventStore.graphic = $eventStore.graphic.filter(e => e.id !== m.id)
             }
-        };
-
-        wsConnect(onMessage, $eventStore.id);
+        }
+        wsConnect(onMessage, $eventStore.id)
     })
 
 </script>
